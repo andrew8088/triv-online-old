@@ -1,0 +1,12 @@
+{
+  "name": "triv-online",
+  "version": "1.0.0",
+  "description": "A slack app for playing trivia games",
+  "main": "index.js",
+  "repository": "git@github.com:andrew8088/triv-online.git",
+  "author": "Andrew Burgess <andrew@burgess.io>",
+  "license": "MIT",
+  "dependencies": {
+    "@vercel/node": "^1.11.1"
+  }
+}

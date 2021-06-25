@@ -1,6 +1,6 @@
 import SlackSlashCommand from "../models/SlackSlashCommand";
 import { VercelRequest, VercelResponse } from "@vercel/node";
-import * as slack from "../lib/slack";
+import slack from "../lib/slack";
 
 function toChannel(res: VercelResponse, text: string): VercelResponse {
   return res.status(200).send({
@@ -31,9 +31,9 @@ export default async (request: VercelRequest, response: VercelResponse) => {
     return toChannel(response, "Sorry, the `" + text + "` command is not supported yet");
   }
 
-  const { data } = await slack.conversations.members(channel_id);
+  const data = await slack.conversations.members({ channel: channel_id });
 
-  if (slack.helpers.isSuccess(data)) {
+  if (data.ok) {
     return toChannel(response, `Ready to play with ${data.members.map((memberId) => `<@${memberId}>`).join(",")}?`);
   }
 

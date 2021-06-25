@@ -1,0 +1,6 @@
+{
+  "extension": ["ts"],
+  "reporter": "spec",
+  "spec": "test/**/*.test.ts",
+  "require": ["ts-node/register/transpile-only", "./test/setup.ts"]
+}

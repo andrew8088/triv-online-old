@@ -1,10 +1,10 @@
-import SlackSlashCommand from "../models/SlackSlashCommand";
+import { SlashCommand } from "@slack/bolt/dist/types/command";
 import { VercelRequest, VercelResponse } from "@vercel/node";
 import slack from "../lib/slack";
 import { channel } from "../lib/slack/utils";
 
 export default async (request: VercelRequest, response: VercelResponse) => {
-  const body: SlackSlashCommand = request.body;
+  const body: SlashCommand = request.body;
 
   const { command, text, channel_id } = body;
 
@@ -19,9 +19,7 @@ export default async (request: VercelRequest, response: VercelResponse) => {
   const data = await slack.conversations.members({ channel: channel_id });
 
   if (data.ok) {
-    return response
-      .status(200)
-      .send(channel(`Ready to play with ${data.members.map((memberId) => `<@${memberId}>`).join(",")}?`));
+    return response.status(200).send(channel(`Okay, preparing your trivia game!`));
   }
 
   return response.status(200).send(channel("Sorry, something went wrong."));

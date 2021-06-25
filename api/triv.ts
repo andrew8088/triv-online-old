@@ -1,12 +1,41 @@
 import SlackSlashCommand from "../models/SlackSlashCommand";
 import { VercelRequest, VercelResponse } from "@vercel/node";
+import * as slack from "../lib/slack";
 
-export default (request: VercelRequest, response: VercelResponse) => {
+function toChannel(res: VercelResponse, text: string): VercelResponse {
+  return res.status(200).send({
+    response_type: "in_channel",
+
+    blocks: [
+      {
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text,
+        },
+      },
+    ],
+  });
+}
+
+export default async (request: VercelRequest, response: VercelResponse) => {
   const body: SlackSlashCommand = request.body;
 
-  console.log(body);
+  const { command, text, channel_id } = body;
 
-  response
-    .status(200)
-    .send({ response_type: "in_channel", text: "ok, let's get started!" });
+  if (command.trim() !== "/triv") {
+    return toChannel(response, "Sorry, the `" + command + "` command is not supported yet");
+  }
+
+  if (text.trim() !== "start") {
+    return toChannel(response, "Sorry, the `" + text + "` command is not supported yet");
+  }
+
+  const { data } = await slack.conversations.members(channel_id);
+
+  if (slack.helpers.isSuccess(data)) {
+    return toChannel(response, `Ready to play with ${data.members.map((memberId) => `<@${memberId}>`).join(",")}?`);
+  }
+
+  return toChannel(response, "Sorry, something went wrong.");
 };
